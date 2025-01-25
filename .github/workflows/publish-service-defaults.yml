@@ -4,10 +4,8 @@ on:
   push:
     paths:
       - 'FireTracker.ServiceDefaults/**'
-      - '.github/workflows/publish-service-defaults.yml'
     branches:
-      - chore/nuget-workflow
-  workflow_dispatch:
+      - main
 
 jobs:
   publish:
