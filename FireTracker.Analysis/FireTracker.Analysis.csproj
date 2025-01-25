@@ -10,6 +10,7 @@
 
     <ItemGroup>
         <PackageReference Include="Azure.Storage.Blobs" Version="12.23.0" />
+        <PackageReference Include="FireTracker.ServiceDefaults" Version="1.0.1" />
         <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.0" />
         <PackageReference Include="Microsoft.ML" Version="4.0.0" />
         <PackageReference Include="Microsoft.ML.OnnxRuntime" Version="1.20.1" />
@@ -21,9 +22,5 @@
       <Content Include="..\.dockerignore">
         <Link>.dockerignore</Link>
       </Content>
-    </ItemGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="..\FireTracker.ServiceDefaults\FireTracker.ServiceDefaults.csproj" />
     </ItemGroup>
 </Project>
