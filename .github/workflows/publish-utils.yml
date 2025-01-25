@@ -1,4 +1,4 @@
-name: Publish Service Defaults Package
+name: Publish Utils Package
 
 on:
   push:
