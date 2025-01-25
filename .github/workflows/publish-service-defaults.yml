@@ -1,0 +1,37 @@
+name: Publish Service Defaults Package
+
+on:
+  push:
+    paths:
+      - 'FireTracker.ServiceDefaults/**'
+    branches:
+      - main
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '9.0'
+
+      - name: Restore Dependencies
+        run: dotnet restore FireTracker.ServiceDefaults/FireTracker.ServiceDefaults.csproj
+
+      - name: Build Project
+        run: dotnet build FireTracker.ServiceDefaults/FireTracker.ServiceDefaults.csproj --configuration Release
+
+      - name: Pack NuGet Package
+        run: dotnet pack FireTracker.ServiceDefaults/FireTracker.ServiceDefaults.csproj --configuration Release --output ./nuget_packages
+
+      - name: Publish to GitHub Packages
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: dotnet nuget push ./nuget_packages/*.nupkg \
+          --source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" \
+          --api-key $GITHUB_TOKEN
