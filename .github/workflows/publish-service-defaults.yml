@@ -5,7 +5,7 @@ on:
     paths:
       - 'FireTracker.ServiceDefaults/**'
     branches:
-      - main
+      - chore/nuget-workflow
 
 jobs:
   publish:
@@ -32,6 +32,4 @@ jobs:
       - name: Publish to GitHub Packages
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: dotnet nuget push ./nuget_packages/*.nupkg \
-          --source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" \
-          --api-key $GITHUB_TOKEN
+        run: dotnet nuget push ./nuget_packages/*.nupkg --source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" --api-key $GITHUB_TOKEN
