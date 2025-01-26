@@ -294,3 +294,6 @@ __pycache__/
 
 # ML
 *.onnx
+
+# Docker Environment
+*.env

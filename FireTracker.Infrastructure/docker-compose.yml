@@ -1,0 +1,55 @@
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: ${MQ_USERNAME}
+      RABBITMQ_DEFAULT_PASS: ${MQ_PASSWORD}
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  firetracker-analysis:
+    image: firetracker-analysis:latest
+    container_name: firetracker-analysis
+    environment:      
+      - MessageQueueConfiguration__HostName=rabbitmq
+      - MessageQueueConfiguration__UserName=${MQ_USERNAME}
+      - MessageQueueConfiguration__Password=${MQ_PASSWORD}
+      - MessageQueueConfiguration__Port=5672
+      - MessageQueueConfiguration__InboundQueue=photo
+      
+      - ImageStorageConfiguration__ConnectionString=${STORAGE_CONNECTION_STRING}
+
+      - MachineLearningModelConfiguration__ModelName=model.onnx
+    ports:
+      - "5000:5000"
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+        
+  firetracker-api:
+    image: firetracker-api:latest
+    container_name: firetracker-api
+    environment:      
+      - MessageQueueConfiguration__HostName=rabbitmq
+      - MessageQueueConfiguration__UserName=${MQ_USERNAME}
+      - MessageQueueConfiguration__Password=${MQ_PASSWORD}
+      - MessageQueueConfiguration__Port=5672
+      - MessageQueueConfiguration__ExchangeName=fire_events
+      
+      - ImageStorageConfiguration__ContainerName=${IMAGE_STORAGE_CONTAINER_NAME}
+      - ImageStorageConfiguration__ConnectionString=${STORAGE_CONNECTION_STRING}
+      
+      - MachineLearningModelConfiguration__ModelName=model.onnx
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
