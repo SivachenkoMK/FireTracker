@@ -5,7 +5,6 @@ WORKDIR /app
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["../FireTracker.ServiceDefaults/FireTracker.ServiceDefaults.csproj", "FireTracker.ServiceDefaults/"]
 COPY ["FireTracker.Analysis/FireTracker.Analysis.csproj", "FireTracker.Analysis/"]
 RUN dotnet restore "FireTracker.Analysis/FireTracker.Analysis.csproj"
 

@@ -6,6 +6,8 @@
         <Nullable>enable</Nullable>
         <IsAspireSharedProject>true</IsAspireSharedProject>
         <Version>1.0.1</Version>
+        <Description>A service defaults for FireTracker projects.</Description>
+        <RepositoryUrl>https://github.com/SivachenkoMK/FireTracker</RepositoryUrl>
     </PropertyGroup>
 
     <ItemGroup>
