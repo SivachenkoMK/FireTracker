@@ -1,6 +1,6 @@
 namespace FireTracker.Analysis.Options;
 
-public class MessageQueueConfiguration
+public class RabbitMqConfiguration
 {
     public string HostName { get; set; } = default!;
     

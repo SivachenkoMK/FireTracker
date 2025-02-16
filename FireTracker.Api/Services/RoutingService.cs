@@ -1,13 +1,14 @@
 using FireTracker.Api.DTOs;
+using FireTracker.Api.Services.Abstractions;
 
 namespace FireTracker.Api.Services;
 
 public class RoutingService
 {
-    private readonly MessagingService _messagingService;
+    private readonly IMessagingService _messagingService;
     private readonly StorageService _storageService;
 
-    public RoutingService(MessagingService messagingService, StorageService storageService)
+    public RoutingService(IMessagingService messagingService, StorageService storageService)
     {
         _messagingService = messagingService;
         _storageService = storageService;
@@ -16,7 +17,7 @@ public class RoutingService
     public async Task SendGisRequest(GisRequest request, CancellationToken token)
     {
         const string routingKey = "fire.gis";
-        await _messagingService.PublishToRabbitMq(routingKey, request, token);
+        await _messagingService.PublishAsync(routingKey, request, token);
     }
 
     public async Task SendPhotoRequest(PhotoRequest request, CancellationToken token)
@@ -31,12 +32,12 @@ public class RoutingService
             PhotoLength = request.Photo.Length
         };
 
-        await _messagingService.PublishToRabbitMq(routingKey, photoInfo, token);
+        await _messagingService.PublishAsync(routingKey, photoInfo, token);
     }
 
     public async Task SendRelationalLocation(LocationRequest request, CancellationToken token)
     {
         const string routingKey = "fire.location";
-        await _messagingService.PublishToRabbitMq(routingKey, request, token);
+        await _messagingService.PublishAsync(routingKey, request, token);
     }
 }

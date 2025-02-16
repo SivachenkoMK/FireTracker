@@ -1,5 +1,6 @@
 using System.Text;
 using FireTracker.Api.Options;
+using FireTracker.Api.Services.Abstractions;
 using FireTracker.Utils;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
@@ -7,16 +8,16 @@ using RabbitMQ.Client;
 
 namespace FireTracker.Api.Services;
 
-public class MessagingService : IAsyncDisposable
+public class RabbitMqMessagingService : IMessagingService
 {
     private IConnection? _connection;
     private IChannel? _channel;
     private readonly AsyncLazy _initializationTask;
-    private readonly MessageQueueConfiguration _messageQueueConfiguration;
+    private readonly RabbitMqConfiguration _rabbitMqConfiguration;
 
-    public MessagingService(IOptions<MessageQueueConfiguration> exchangeOptions)
+    public RabbitMqMessagingService(IOptions<RabbitMqConfiguration> exchangeOptions)
     {
-        _messageQueueConfiguration = exchangeOptions.Value;
+        _rabbitMqConfiguration = exchangeOptions.Value;
         _initializationTask = new AsyncLazy(InitializeRabbitMqAsync);
     }
 
@@ -24,10 +25,10 @@ public class MessagingService : IAsyncDisposable
     {
         var factory = new ConnectionFactory
         {
-            HostName = _messageQueueConfiguration.HostName,
-            UserName = _messageQueueConfiguration.UserName,
-            Password = _messageQueueConfiguration.Password,
-            Port = _messageQueueConfiguration.Port
+            HostName = _rabbitMqConfiguration.HostName,
+            UserName = _rabbitMqConfiguration.UserName,
+            Password = _rabbitMqConfiguration.Password,
+            Port = _rabbitMqConfiguration.Port
         };
 
         _connection = await factory.CreateConnectionAsync();
@@ -35,7 +36,7 @@ public class MessagingService : IAsyncDisposable
 
         // Declare exchange
         await _channel.ExchangeDeclareAsync(
-            exchange: _messageQueueConfiguration.ExchangeName,
+            exchange: _rabbitMqConfiguration.ExchangeName,
             type: ExchangeType.Direct,
             durable: true,
             autoDelete: false);
@@ -49,12 +50,12 @@ public class MessagingService : IAsyncDisposable
 
         await _channel.QueueBindAsync(
             queue: "incident",
-            exchange: _messageQueueConfiguration.ExchangeName,
+            exchange: _rabbitMqConfiguration.ExchangeName,
             routingKey: "fire.gis");
 
         await _channel.QueueBindAsync(
             queue: "incident",
-            exchange: _messageQueueConfiguration.ExchangeName,
+            exchange: _rabbitMqConfiguration.ExchangeName,
             routingKey: "fire.location");
 
         await _channel.QueueDeclareAsync(
@@ -65,33 +66,30 @@ public class MessagingService : IAsyncDisposable
 
         await _channel.QueueBindAsync(
             queue: "photo",
-            exchange: _messageQueueConfiguration.ExchangeName,
+            exchange: _rabbitMqConfiguration.ExchangeName,
             routingKey: "fire.photo");
     }
 
     private async Task<IChannel> GetChannelAsync()
     {
-        await _initializationTask.Complete; // Ensure initialization is complete before accessing the channel
-        
+        await _initializationTask.Complete; // Ensure initialization is complete
         if (_channel == null)
             throw new InvalidOperationException("RabbitMQ channel is not initialized.");
-        
         return _channel;
     }
-    
-    public async Task PublishToRabbitMq(string routingKey, object message, CancellationToken token)
+
+    public async Task PublishAsync(string routingKey, object message, CancellationToken cancellationToken)
     {
         var channel = await GetChannelAsync();
-        
-        var messageBody = JsonConvert.SerializeObject(message);
 
+        var messageBody = JsonConvert.SerializeObject(message);
         var body = Encoding.UTF8.GetBytes(messageBody);
 
         await channel.BasicPublishAsync(
-            exchange: _messageQueueConfiguration.ExchangeName,
+            exchange: _rabbitMqConfiguration.ExchangeName,
             routingKey: routingKey,
             body: body,
-            cancellationToken: token);
+            cancellationToken: cancellationToken);
     }
 
     public async ValueTask DisposeAsync()
