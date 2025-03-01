@@ -26,7 +26,7 @@ public class AzureServiceBusMessagingConsumer : IMessagingConsumer
         if (_client == null)
             throw new ArgumentNullException(nameof(_client), "Couldn't connect to Azure Service Bus");
         
-        _processor = _client.CreateProcessor(_configuration.TopicName, _configuration.SubscriptionName, new ServiceBusProcessorOptions
+        _processor = _client.CreateProcessor(_configuration.TopicName, _configuration.PhotoSubscriptionName, new ServiceBusProcessorOptions
         {
             AutoCompleteMessages = false
         });

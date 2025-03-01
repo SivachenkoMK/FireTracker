@@ -6,5 +6,5 @@ public class AzureServiceBusConfiguration
     
     public string TopicName { get; set; } = default!;
     
-    public string SubscriptionName { get; set; } = default!;
+    public string PhotoSubscriptionName { get; set; } = default!;
 }

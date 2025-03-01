@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: firetracker-analysis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: firetracker-analysis
+  template:
+    metadata:
+      labels:
+        app: firetracker-analysis
+    spec:
+      containers:
+        - name: firetracker-analysis
+          image: firetracker.azurecr.io/firetracker-analysis:latest
+          imagePullPolicy: Always
+          envFrom:
+            - configMapRef:
+                name: firetracker-analysis-configmap
+            - secretRef:
+                name: firetracker-analysis-secrets
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "256Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"

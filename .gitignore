@@ -156,8 +156,10 @@ publish/
 *.publishproj
 
 # Microsoft Azure Bicep Parameters
-*.parameters.bicepparam
+*.bicepparam
 !example.parameters.bicepparam
+*ssh-key*
+FireTracker.Infrastructure/k8s/secrets/
 
 # Microsoft Azure Web App publish settings. Comment the next line if you want to
 # checkin your Azure Web App publish settings, but sensitive information contained
@@ -297,3 +299,4 @@ __pycache__/
 
 # Docker Environment
 *.env
+**setenv.sh

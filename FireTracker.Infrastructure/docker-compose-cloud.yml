@@ -1,0 +1,26 @@
+services:
+  firetracker-analysis:
+    image: firetracker-analysis:latest
+    container_name: firetracker-analysis
+    environment:
+      - AzureServiceBusConfiguration__ConnectionString=${SERVICE_BUS_CONNECTION_STRING}
+      - AzureServiceBusConfiguration__PhotoSubscriptionName=${SERVICE_BUS_PHOTO_SUBSCRIPTION_NAME}
+      - AzureServiceBusConfiguration__TopicName=${SERVICE_BUS_TOPIC_NAME}
+      - ImageStorageConfiguration__ConnectionString=${STORAGE_CONNECTION_STRING}
+      - MachineLearningModelConfiguration__ModelName=model.onnx
+      - ASPNETCORE_ENVIRONMENT=Production
+    ports:
+      - "5000:5000"
+
+  firetracker-api:
+    image: firetracker-api:latest
+    container_name: firetracker-api
+    environment:
+      - AzureServiceBusConfiguration__ConnectionString=${SERVICE_BUS_CONNECTION_STRING}
+      - AzureServiceBusConfiguration__TopicName=${SERVICE_BUS_TOPIC_NAME}
+      - ImageStorageConfiguration__ContainerName=${IMAGE_STORAGE_CONTAINER_NAME}
+      - ImageStorageConfiguration__ConnectionString=${STORAGE_CONNECTION_STRING}
+      - ASPNETCORE_ENVIRONMENT=Production
+    ports:
+      - "8080:8080"
+      - "8081:8081"
