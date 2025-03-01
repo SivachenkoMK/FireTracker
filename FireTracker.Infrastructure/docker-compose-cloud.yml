@@ -8,7 +8,8 @@ services:
       - AzureServiceBusConfiguration__TopicName=${SERVICE_BUS_TOPIC_NAME}
       - ImageStorageConfiguration__ConnectionString=${STORAGE_CONNECTION_STRING}
       - MachineLearningModelConfiguration__ModelName=model.onnx
-      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_ENVIRONMENT=Integration
+      - Logging__LogLevel__Default=Information
     ports:
       - "5000:5000"
 
@@ -20,7 +21,22 @@ services:
       - AzureServiceBusConfiguration__TopicName=${SERVICE_BUS_TOPIC_NAME}
       - ImageStorageConfiguration__ContainerName=${IMAGE_STORAGE_CONTAINER_NAME}
       - ImageStorageConfiguration__ConnectionString=${STORAGE_CONNECTION_STRING}
-      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_ENVIRONMENT=Integration
+      - Logging__LogLevel__Default=Information
     ports:
       - "8080:8080"
       - "8081:8081"
+  
+  firetracker-core:
+    image: firetracker-core:latest
+    container_name: firetracker-core
+    environment:
+      - AzureServiceBusConfiguration__ConnectionString=${SERVICE_BUS_CONNECTION_STRING}
+      - AzureServiceBusConfiguration__TopicName=${SERVICE_BUS_TOPIC_NAME}
+      - InboundQueueConfiguration__LocationQueue=${INBOUND_INCIDENT_QUEUE}
+      - InboundQueueConfiguration__AnalysisQueue=${INBOUND_ANALYSIS_QUEUE}
+      - ASPNETCORE_ENVIRONMENT=Integration
+      - Logging__LogLevel__Default=Information
+    ports:
+      - "80:8080"
+      - "443:8081"

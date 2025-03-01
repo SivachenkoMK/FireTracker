@@ -1,4 +1,5 @@
 using Azure.Storage.Blobs;
+using FireTracker.Analysis.DTOs;
 using FireTracker.Analysis.Options;
 using Microsoft.Extensions.Options;
 using Microsoft.ML.OnnxRuntime;

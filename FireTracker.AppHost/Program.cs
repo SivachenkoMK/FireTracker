@@ -10,7 +10,7 @@ if (!useServiceBus)
 
     var rabbitmq = builder.AddRabbitMQ("messaging", username, password, port: 5672)
         .WithManagementPlugin();
-    
+
     builder.AddProject<FireTracker_Analysis>("analysis")
         .WithReference(rabbitmq)
         .WaitFor(rabbitmq);
@@ -18,11 +18,16 @@ if (!useServiceBus)
     builder.AddProject<FireTracker_Api>("api")
         .WithReference(rabbitmq)
         .WaitFor(rabbitmq);
+
+    builder.AddProject<FireTracker_Core>("core")
+        .WithReference(rabbitmq)
+        .WaitFor(rabbitmq);
 }
 else
 {
     builder.AddProject<FireTracker_Analysis>("analysis");
     builder.AddProject<FireTracker_Api>("api");
+    builder.AddProject<FireTracker_Core>("core");
 }
 
 

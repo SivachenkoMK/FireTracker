@@ -22,6 +22,7 @@
   <ItemGroup>
     <ProjectReference Include="..\FireTracker.Analysis\FireTracker.Analysis.csproj" />
     <ProjectReference Include="..\FireTracker.Api\FireTracker.Api.csproj" />
+    <ProjectReference Include="..\FireTracker.Core\FireTracker.Core.csproj" />
   </ItemGroup>
 
 </Project>

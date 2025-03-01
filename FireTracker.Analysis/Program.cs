@@ -5,7 +5,7 @@ using FireTracker.Analysis.Services.Abstractions;
 
 var builder = Host.CreateApplicationBuilder(args);
 
-var isServiceBusDisabled = builder.Environment.IsDevelopment();
+var isDevelopment = builder.Environment.IsDevelopment();
 
 builder.AddServiceDefaults();
 
@@ -14,11 +14,20 @@ builder.Services.Configure<AzureServiceBusConfiguration>(builder.Configuration.G
 builder.Services.Configure<MachineLearningModelConfiguration>(builder.Configuration.GetSection(nameof(MachineLearningModelConfiguration)));
 builder.Services.Configure<ImageStorageConfiguration>(builder.Configuration.GetSection(nameof(ImageStorageConfiguration)));
 
-_ = isServiceBusDisabled
-    ? builder.Services.AddSingleton<IMessagingConsumer, RabbitMqMessagingConsumer>()
-    : builder.Services.AddSingleton<IMessagingConsumer, AzureServiceBusMessagingConsumer>();
+if (isDevelopment)
+{
+    builder.Services.AddSingleton<IMessagingConsumer, RabbitMqMessagingConsumer>();
+    builder.Services.AddSingleton<IMessagingPublisher, RabbitMqMessagingPublisher>();
+}
+else
+{
+    builder.Services.AddSingleton<IMessagingConsumer, AzureServiceBusMessagingConsumer>();
+    builder.Services.AddSingleton<IMessagingPublisher, AzureServiceBusMessagingPublisher>();
+}
 
 builder.Services.AddSingleton<ImageProcessor>();
+builder.Services.AddSingleton<InterpretationService>();
+builder.Services.AddSingleton<RoutingService>();
 
 builder.Services.AddHostedService<Worker>();
 

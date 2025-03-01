@@ -30,4 +30,8 @@
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </None>
     </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\FireTracker.Utils\FireTracker.Utils.csproj" />
+    </ItemGroup>
 </Project>

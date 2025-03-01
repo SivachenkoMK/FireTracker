@@ -1,4 +1,4 @@
-namespace FireTracker.Analysis;
+namespace FireTracker.Analysis.DTOs;
 
 public class SessionInformationModel
 {

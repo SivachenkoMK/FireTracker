@@ -1,21 +1,21 @@
 using System.Text;
-using FireTracker.Api.Options;
-using FireTracker.Api.Services.Abstractions;
+using FireTracker.Analysis.Options;
+using FireTracker.Analysis.Services.Abstractions;
 using FireTracker.Utils;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 
-namespace FireTracker.Api.Services;
+namespace FireTracker.Analysis.Services;
 
-public class RabbitMqMessagingService : IMessagingService
+public class RabbitMqMessagingPublisher : IMessagingPublisher
 {
     private IConnection? _connection;
     private IChannel? _channel;
     private readonly AsyncLazy _initializationTask;
     private readonly RabbitMqConfiguration _rabbitMqConfiguration;
 
-    public RabbitMqMessagingService(IOptions<RabbitMqConfiguration> exchangeOptions)
+    public RabbitMqMessagingPublisher(IOptions<RabbitMqConfiguration> exchangeOptions)
     {
         _rabbitMqConfiguration = exchangeOptions.Value;
         _initializationTask = new AsyncLazy(InitializeRabbitMqAsync);
@@ -36,38 +36,22 @@ public class RabbitMqMessagingService : IMessagingService
 
         // Declare exchange
         await _channel.ExchangeDeclareAsync(
-            exchange: _rabbitMqConfiguration.ExchangeName,
+            exchange: _rabbitMqConfiguration.PublishTopic,
             type: ExchangeType.Direct,
             durable: true,
             autoDelete: false);
 
         // Declare and bind queues
         await _channel.QueueDeclareAsync(
-            queue: "incident",
+            queue: "analysis",
             durable: true,
             exclusive: false,
             autoDelete: false);
 
         await _channel.QueueBindAsync(
-            queue: "incident",
-            exchange: _rabbitMqConfiguration.ExchangeName,
-            routingKey: "fire.gis");
-
-        await _channel.QueueBindAsync(
-            queue: "incident",
-            exchange: _rabbitMqConfiguration.ExchangeName,
-            routingKey: "fire.location");
-
-        await _channel.QueueDeclareAsync(
-            queue: "photo",
-            durable: true,
-            exclusive: false,
-            autoDelete: false);
-
-        await _channel.QueueBindAsync(
-            queue: "photo",
-            exchange: _rabbitMqConfiguration.ExchangeName,
-            routingKey: "fire.photo");
+            queue: "analysis",
+            exchange: _rabbitMqConfiguration.PublishTopic,
+            routingKey: "fire.analysis");
     }
 
     private async Task<IChannel> GetChannelAsync()
@@ -86,7 +70,7 @@ public class RabbitMqMessagingService : IMessagingService
         var body = Encoding.UTF8.GetBytes(messageBody);
 
         await channel.BasicPublishAsync(
-            exchange: _rabbitMqConfiguration.ExchangeName,
+            exchange: _rabbitMqConfiguration.PublishTopic,
             routingKey: routingKey,
             body: body,
             cancellationToken: cancellationToken);

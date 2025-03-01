@@ -1,6 +1,6 @@
 namespace FireTracker.Api.Services.Abstractions;
 
-public interface IMessagingService : IAsyncDisposable
+public interface IMessagingPublisher : IAsyncDisposable
 {
     Task PublishAsync(string routingKey, object message, CancellationToken cancellationToken);
 }

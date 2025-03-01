@@ -61,3 +61,21 @@ resource photoRule 'Microsoft.ServiceBus/namespaces/topics/subscriptions/rules@2
     }
   }
 }
+
+resource analysisSubscription 'Microsoft.ServiceBus/namespaces/topics/subscriptions@2024-01-01' = {
+  name: 'analysis'
+  parent: serviceBusTopic
+  properties: {
+  }
+}
+
+resource analysisRule 'Microsoft.ServiceBus/namespaces/topics/subscriptions/rules@2024-01-01' = {
+  name: 'AnalysisFilter'
+  parent: analysisSubscription
+  properties: {
+    filterType: 'SqlFilter'
+    sqlFilter: {
+      sqlExpression: 'routingKey = \'fire.analysis\''
+    }
+  }
+}

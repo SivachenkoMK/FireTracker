@@ -10,6 +10,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FireTracker.Utils", "FireTr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FireTracker.Analysis", "FireTracker.Analysis\FireTracker.Analysis.csproj", "{133495C9-25F6-4076-BAA1-91AB72F3F906}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FireTracker.Core", "FireTracker.Core\FireTracker.Core.csproj", "{4BA988C6-B5C7-4448-A225-0606B65CE79C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,5 +38,9 @@ Global
 		{133495C9-25F6-4076-BAA1-91AB72F3F906}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{133495C9-25F6-4076-BAA1-91AB72F3F906}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{133495C9-25F6-4076-BAA1-91AB72F3F906}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4BA988C6-B5C7-4448-A225-0606B65CE79C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4BA988C6-B5C7-4448-A225-0606B65CE79C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4BA988C6-B5C7-4448-A225-0606B65CE79C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4BA988C6-B5C7-4448-A225-0606B65CE79C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

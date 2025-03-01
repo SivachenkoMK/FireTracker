@@ -5,19 +5,19 @@ namespace FireTracker.Api.Services;
 
 public class RoutingService
 {
-    private readonly IMessagingService _messagingService;
+    private readonly IMessagingPublisher _messagingPublisher;
     private readonly StorageService _storageService;
 
-    public RoutingService(IMessagingService messagingService, StorageService storageService)
+    public RoutingService(IMessagingPublisher messagingPublisher, StorageService storageService)
     {
-        _messagingService = messagingService;
+        _messagingPublisher = messagingPublisher;
         _storageService = storageService;
     }
 
     public async Task SendGisRequest(GisRequest request, CancellationToken token)
     {
         const string routingKey = "fire.gis";
-        await _messagingService.PublishAsync(routingKey, request, token);
+        await _messagingPublisher.PublishAsync(routingKey, request, token);
     }
 
     public async Task SendPhotoRequest(PhotoRequest request, CancellationToken token)
@@ -32,12 +32,12 @@ public class RoutingService
             PhotoLength = request.Photo.Length
         };
 
-        await _messagingService.PublishAsync(routingKey, photoInfo, token);
+        await _messagingPublisher.PublishAsync(routingKey, photoInfo, token);
     }
 
     public async Task SendRelationalLocation(LocationRequest request, CancellationToken token)
     {
         const string routingKey = "fire.location";
-        await _messagingService.PublishAsync(routingKey, request, token);
+        await _messagingPublisher.PublishAsync(routingKey, request, token);
     }
 }

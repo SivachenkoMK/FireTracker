@@ -4,7 +4,7 @@ using FireTracker.Api.Services.Abstractions;
 using Microsoft.AspNetCore.Http.Features;
 
 var builder = WebApplication.CreateBuilder(args);
-var isServiceBusDisabled = builder.Environment.IsDevelopment();
+var isDevelopment = builder.Environment.IsDevelopment();
 
 // Add services to the container.
 
@@ -17,9 +17,9 @@ builder.Services.Configure<RabbitMqConfiguration>(builder.Configuration.GetSecti
 builder.Services.Configure<AzureServiceBusConfiguration>(builder.Configuration.GetSection(nameof(AzureServiceBusConfiguration)));
 builder.Services.Configure<ImageStorageConfiguration>(builder.Configuration.GetSection(nameof(ImageStorageConfiguration)));
 
-_ = isServiceBusDisabled
-    ? builder.Services.AddSingleton<IMessagingService, RabbitMqMessagingService>()
-    : builder.Services.AddSingleton<IMessagingService, AzureServiceBusMessagingService>();
+_ = isDevelopment
+    ? builder.Services.AddSingleton<IMessagingPublisher, RabbitMqMessagingPublisher>()
+    : builder.Services.AddSingleton<IMessagingPublisher, AzureServiceBusMessagingPublisher>();
 
 builder.Services.AddSingleton<StorageService>();
 builder.Services.AddScoped<RoutingService>();

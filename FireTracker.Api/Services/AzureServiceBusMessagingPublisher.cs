@@ -6,12 +6,12 @@ using Newtonsoft.Json;
 
 namespace FireTracker.Api.Services;
 
-public class AzureServiceBusMessagingService : IMessagingService
+public class AzureServiceBusMessagingPublisher : IMessagingPublisher
 {
     private readonly ServiceBusClient? _client;
     private readonly ServiceBusSender? _sender;
 
-    public AzureServiceBusMessagingService(IOptions<AzureServiceBusConfiguration> options)
+    public AzureServiceBusMessagingPublisher(IOptions<AzureServiceBusConfiguration> options)
     {
         _client = new ServiceBusClient(options.Value.ConnectionString);
         _sender = _client.CreateSender(options.Value.TopicName);

@@ -1,0 +1,40 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<div class="container">
+    <h1 class="display-4">Incidents</h1>
+
+    @if (!Model.Incidents.Any())
+    {
+        <p>No incidents available.</p>
+    }
+    else
+    {
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Id</th>
+                <th>Created At (UTC)</th>
+                <th>Updated At (UTC)</th>
+                <th>Location</th>
+                <th>Likelihood</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var incident in Model.Incidents)
+            {
+                <tr>
+                    <td>@incident.Id</td>
+                    <td>@incident.CreatedAtUtc</td>
+                    <td>@incident.UpdatedAtUtc</td>
+                    <td>@incident.Location</td>
+                    <td>@incident.Likelihood</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    }
+</div>
