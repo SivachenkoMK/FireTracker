@@ -25,7 +25,7 @@ public class ConsumerWorker : BackgroundService
             // Process the message based on queue name
             if (routingKey == "fire.location")
             {
-                var locationInformation = JsonConvert.DeserializeObject<LocationModel>(message);
+                var locationInformation = JsonConvert.DeserializeObject<LocationRequest>(message);
                 if (locationInformation == null)
                 {
                     _logger.LogError("Received message: {Message} for location queue, but couldn't deserialize it", message);

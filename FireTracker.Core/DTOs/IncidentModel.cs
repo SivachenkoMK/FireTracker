@@ -8,7 +8,7 @@ public class IncidentModel
     
     public DateTime UpdatedAtUtc { get; set; }
     
-    public string Location { get; set; } = default!;
+    public RelativeLocation Location { get; set; }
     
     public FireDetectionResult Likelihood { get; set; }
 }

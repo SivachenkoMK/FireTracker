@@ -13,7 +13,7 @@ public class IncidentService
         _logger = logger;
     }
 
-    public void UpdateLocation(LocationModel model)
+    public void UpdateLocation(LocationRequest model)
     {
         if (DbContext.IncidentCollection.TryGetValue(model.FireId, out var incident))
         {
