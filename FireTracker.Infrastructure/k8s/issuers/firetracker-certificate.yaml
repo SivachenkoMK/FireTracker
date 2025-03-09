@@ -1,0 +1,12 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: firetracker-tls
+spec:
+  secretName: firetracker-tls
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  dnsNames:
+    - firetracker.sivach.me
+    - api.firetracker.sivach.me
