@@ -1,18 +1,78 @@
 ﻿@page
+@using FireTracker.Core.DTOs
 @model IndexModel
 @{
     ViewData["Title"] = "Home page";
+    
+    var mapIncidents = Model.Incidents.Where(i => i.Latitude != 0 && i.Longitude != 0).ToList();
+    var listIncidents = Model.Incidents.Where(i => i is { Latitude: 0, Longitude: 0 }).ToList();
+
+    var firstIncidentWithLocation = mapIncidents.FirstOrDefault();
+    var centerLat = firstIncidentWithLocation?.Latitude ?? 49;
+    var centerLng = firstIncidentWithLocation?.Longitude ?? 32;
+}
+<div class="container">
+    <h1 class="display-4">Incidents Map</h1>
+    <div id="map" style="height:500px;"></div>
+</div>
+
+@section Scripts {
+    <link
+        rel="stylesheet"
+        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script
+        src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        var map = L.map('map').setView([@centerLat, @centerLng], 13);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+
+        @if (mapIncidents.Any())
+        {
+            foreach (var incident in mapIncidents)
+            {
+                var color = incident.Likelihood switch
+                {
+                    FireDetectionResult.Fire => "red",
+                    FireDetectionResult.LikelyFire => "orange",
+                    FireDetectionResult.LikelyNoFire => "yellow",
+                    FireDetectionResult.NoFire => "white",
+                    _ => "blue"
+                };
+                <text>
+                    var marker = L.circleMarker([@incident.Latitude, @incident.Longitude], {
+                        radius: 8,
+                        fillColor: '@color',
+                        color: '@color',
+                        weight: 1,
+                        opacity: 1,
+                        fillOpacity: 0.8
+                    }).addTo(map);
+
+                    marker.bindPopup(
+                        "Id: @incident.Id<br>" +
+                        "Created At: @incident.CreatedAtUtc<br>" +
+                        "Updated At: @incident.UpdatedAtUtc<br>" +
+                        "Location: @incident.Location<br>" +
+                        "Likelihood: @incident.Likelihood"
+                    );
+                </text>
+            }
+        }
+        else {
+            <text>
+                console.log("No incidents available for the map.");
+            </text>
+        }
+    </script>
 }
 
-<div class="container">
-    <h1 class="display-4">Incidents</h1>
-
-    @if (!Model.Incidents.Any())
-    {
-        <p>No incidents available.</p>
-    }
-    else
-    {
+@if (listIncidents.Any())
+{
+    <div class="container mt-4">
+        <h2>Incidents with Unknown Location</h2>
         <table class="table">
             <thead>
             <tr>
@@ -24,17 +84,17 @@
             </tr>
             </thead>
             <tbody>
-            @foreach (var incident in Model.Incidents)
+            @foreach (var incident in listIncidents)
             {
                 <tr>
                     <td>@incident.Id</td>
                     <td>@incident.CreatedAtUtc</td>
                     <td>@incident.UpdatedAtUtc</td>
-                    <td>@incident.Location</td>
+                    <td>Unknown</td>
                     <td>@incident.Likelihood</td>
                 </tr>
             }
             </tbody>
         </table>
-    }
-</div>
+    </div>
+}

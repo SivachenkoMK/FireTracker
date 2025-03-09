@@ -36,7 +36,14 @@ public class ConsumerWorker : BackgroundService
             }
             else if (routingKey == "fire.gis")
             {
-                // TODO: Implement GIS processing
+                var gisRequest = JsonConvert.DeserializeObject<GisRequest>(message);
+                if (gisRequest == null)
+                {
+                    _logger.LogError("Received message: {Message} for gis queue, but couldn't deserialize it", message);
+                    return Task.CompletedTask;
+                }
+                
+                _incidentService.UpdateGis(gisRequest);
             }
             else if (routingKey == "fire.analysis")
             {

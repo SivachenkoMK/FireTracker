@@ -52,4 +52,25 @@ public class IncidentService
         if (!DbContext.IncidentCollection.TryAdd(analysisResult.SessionId, incidentModel))
             _logger.LogError("Failed to add incident with id {Id} to the collection", analysisResult.SessionId);
     }
+
+    public void UpdateGis(GisRequest gisRequest)
+    {
+        if (DbContext.IncidentCollection.TryGetValue(gisRequest.SessionGuid, out var incident))
+        {
+            incident.Latitude = gisRequest.Latitude;
+            incident.Longitude = gisRequest.Longitude;
+        }
+        
+        var incidentModel = new IncidentModel
+        {
+            Id = gisRequest.SessionGuid,
+            Latitude = gisRequest.Latitude,
+            Longitude = gisRequest.Longitude,
+            CreatedAtUtc = DateTime.UtcNow,
+            UpdatedAtUtc = DateTime.UtcNow,
+        };
+        
+        if (!DbContext.IncidentCollection.TryAdd(gisRequest.SessionGuid, incidentModel))
+            _logger.LogError("Failed to add incident with id {Id} to the collection", gisRequest.SessionGuid);
+    }
 }

@@ -1,4 +1,4 @@
-namespace FireTracker.Api.DTOs;
+namespace FireTracker.Core.DTOs;
 
 public class GisRequest
 {
