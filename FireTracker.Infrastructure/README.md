@@ -38,6 +38,8 @@ kubectl apply -f everything you need
 
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/cloud/deploy.yaml
 
+kubectl apply -f https://github.com/cert-manager/cert-manager/releases/latest/download/cert-manager.yaml
+
 ### Kubectl Cheat-sheet
 
 kubectl config current-context
@@ -50,3 +52,5 @@ kubectl describe ...
 kubectl logs ...
 
 kubectl get svc -n ingress-nginx
+
+kubectl get pods -n cert-manager

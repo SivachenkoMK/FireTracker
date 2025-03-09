@@ -300,3 +300,6 @@ __pycache__/
 # Docker Environment
 *.env
 **setenv.sh
+
+#K8s sensitive files
+**letsencrypt-issuer.yaml

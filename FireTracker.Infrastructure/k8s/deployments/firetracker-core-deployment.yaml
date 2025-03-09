@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: firetracker-core
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: firetracker-core
+  template:
+    metadata:
+      labels:
+        app: firetracker-core
+    spec:
+      containers:
+        - name: firetracker-core
+          image: firetracker.azurecr.io/firetracker-core:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: firetracker-core-configmap
+            - secretRef:
+                name: firetracker-core-secrets
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "256Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"

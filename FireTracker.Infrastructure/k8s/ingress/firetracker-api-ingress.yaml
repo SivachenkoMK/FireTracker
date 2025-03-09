@@ -6,7 +6,7 @@ metadata:
     kubernetes.io/ingress.class: "nginx"
 spec:
   rules:
-    - host: firetracker.sivach.me
+    - host: api.firetracker.sivach.me
       http:
         paths:
           - path: /

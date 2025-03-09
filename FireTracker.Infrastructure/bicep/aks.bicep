@@ -3,14 +3,9 @@ param nodeCount int
 param sshRSAPublicKey string
 param azureuser string
 param dnsPrefix string
-param staticIpName string
 param location string = resourceGroup().location
 param workspaceName string
 param acrName string
-
-resource staticIp 'Microsoft.Network/publicIPAddresses@2024-05-01' existing = {
-  name: staticIpName
-}
 
 resource acr 'Microsoft.ContainerRegistry/registries@2023-07-01' existing = {
   name: acrName
@@ -74,15 +69,6 @@ resource aksCluster 'Microsoft.ContainerService/managedClusters@2022-09-01' = {
     networkProfile: {
       networkPlugin: 'azure'
       loadBalancerSku: 'standard'
-      loadBalancerProfile: {
-        outboundIPs: {
-          publicIPs: [
-            {
-              id: staticIp.id
-            }
-          ]
-        }
-      }
     }
     addonProfiles: {
       omsagent: {
